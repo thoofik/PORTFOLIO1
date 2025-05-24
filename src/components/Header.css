@@ -3,15 +3,14 @@
   top: 0;
   left: 0;
   width: 100%;
-  background: rgba(10, 10, 10, 0.95);
-  backdrop-filter: blur(15px);
+  background: rgba(10, 10, 10, 1);
   border-bottom: 1px solid var(--border-light);
   z-index: 1000;
   transition: all 0.3s ease;
 }
 
 .header.scrolled {
-  background: rgba(10, 10, 10, 0.98);
+  background: rgba(10, 10, 10, 1);
   box-shadow: var(--shadow-lg);
   border-bottom-color: var(--primary-color);
 }
@@ -80,7 +79,6 @@
   );
   z-index: -1;
   animation: revolvingLine 2s linear infinite;
-  filter: blur(1px);
 }
 
 .logo-neon-border::after {
@@ -184,37 +182,98 @@
   width: 80%;
 }
 
+/* Modern Mobile Menu */
 .mobile-menu-toggle {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 48px;
+  height: 48px;
   cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 8px;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-light);
+  background: transparent;
+  border: none;
+  padding: 8px;
   transition: all 0.3s ease;
 }
 
 .mobile-menu-toggle:hover {
-  background: var(--bg-card);
-  border-color: var(--primary-color);
-  transform: scale(1.05);
+  background: rgba(100, 255, 218, 0.1);
+  border-radius: 8px;
 }
 
-.menu-icon {
-  color: var(--text-primary);
-  font-size: 1.2rem;
+/* Hamburger Animation */
+.hamburger {
+  position: relative;
+  width: 24px;
+  height: 18px;
 }
 
+.hamburger span {
+  display: block;
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  background: var(--text-primary);
+  border-radius: 1px;
+  opacity: 1;
+  left: 0;
+  transform: rotate(0deg);
+  transition: all 0.25s ease-in-out;
+}
+
+.hamburger span:nth-child(1) {
+  top: 0px;
+}
+
+.hamburger span:nth-child(2) {
+  top: 8px;
+}
+
+.hamburger span:nth-child(3) {
+  top: 16px;
+}
+
+/* Hamburger Active State */
+.mobile-menu-toggle.active .hamburger span:nth-child(1) {
+  top: 8px;
+  transform: rotate(135deg);
+  background: var(--primary-color);
+}
+
+.mobile-menu-toggle.active .hamburger span:nth-child(2) {
+  opacity: 0;
+  left: -60px;
+}
+
+.mobile-menu-toggle.active .hamburger span:nth-child(3) {
+  top: 8px;
+  transform: rotate(-135deg);
+  background: var(--primary-color);
+}
+
+/* Clean Mobile Overlay */
 .menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(100, 255, 218, 0.05) 50%,
+    rgba(187, 134, 252, 0.05) 100%
+  );
   z-index: 999;
-  backdrop-filter: blur(5px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
 }
 
 @media (max-width: 768px) {
@@ -236,13 +295,16 @@
     position: fixed;
     top: 70px;
     right: -100%;
-    width: 280px;
+    width: 100%;
+    max-width: 320px;
     height: calc(100vh - 70px);
-    background: var(--bg-card);
-    border-left: 1px solid var(--border-light);
-    transition: right 0.3s ease;
+    background: linear-gradient(145deg, rgba(10, 10, 10, 0.98), rgba(26, 26, 26, 0.98));
+    border-left: 2px solid var(--primary-color);
+    transition: right 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     padding: 2rem 0;
-    box-shadow: var(--shadow-xl);
+    box-shadow: -10px 0 30px rgba(100, 255, 218, 0.2);
+    z-index: 1000;
+    overflow-y: auto;
   }
   
   .nav-menu.active {
@@ -251,28 +313,117 @@
   
   .nav-menu ul {
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0 1rem;
+    gap: 0;
+    padding: 0 1.5rem;
   }
+  
+  .nav-menu li {
+    opacity: 0;
+    transform: translateX(30px);
+    animation: slideInRight 0.4s ease forwards;
+  }
+  
+  .nav-menu.active li:nth-child(1) { animation-delay: 0.1s; }
+  .nav-menu.active li:nth-child(2) { animation-delay: 0.15s; }
+  .nav-menu.active li:nth-child(3) { animation-delay: 0.2s; }
+  .nav-menu.active li:nth-child(4) { animation-delay: 0.25s; }
+  .nav-menu.active li:nth-child(5) { animation-delay: 0.3s; }
+  .nav-menu.active li:nth-child(6) { animation-delay: 0.35s; }
+  .nav-menu.active li:nth-child(7) { animation-delay: 0.4s; }
   
   .nav-menu a {
     width: 100%;
     justify-content: flex-start;
-    padding: 1rem;
+    padding: 1.25rem 1.5rem;
     border-radius: 12px;
     margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+    background: rgba(26, 26, 26, 0.6);
+    position: relative;
+    overflow: hidden;
   }
   
-  .nav-menu a.active::after {
-    display: none;
+  .nav-menu a::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .nav-menu a:active::after {
+    left: 100%;
+  }
+  
+  .nav-menu a:hover {
+    background: linear-gradient(135deg, rgba(100, 255, 218, 0.15), rgba(187, 134, 252, 0.15));
+    border-color: var(--primary-color);
+    transform: translateX(8px);
+    box-shadow: 0 4px 15px rgba(100, 255, 218, 0.2);
   }
   
   .nav-menu a.active {
     background: var(--gradient-primary);
     color: var(--bg-primary);
+    border-color: var(--primary-color);
+    box-shadow: 
+      0 0 15px rgba(100, 255, 218, 0.4),
+      0 4px 20px rgba(187, 134, 252, 0.3);
+    transform: translateX(5px);
+  }
+  
+  .nav-menu a.active:hover {
+    transform: translateX(10px);
+    box-shadow: 
+      0 0 20px rgba(100, 255, 218, 0.5),
+      0 6px 25px rgba(187, 134, 252, 0.4);
+  }
+  
+  .nav-menu a::before {
+    display: none;
   }
   
   .mobile-menu-toggle {
     display: flex;
+  }
+  
+  .mobile-menu-toggle:hover {
+    background: linear-gradient(135deg, rgba(100, 255, 218, 0.1), rgba(187, 134, 252, 0.1));
+  }
+  
+  .mobile-menu-toggle.active .hamburger span:nth-child(1),
+  .mobile-menu-toggle.active .hamburger span:nth-child(3) {
+    background: var(--primary-color);
+    box-shadow: 0 0 8px rgba(100, 255, 218, 0.6);
+  }
+}
+
+/* Slide-in Animation */
+@keyframes slideInRight {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Mobile Menu Close Animation */
+.nav-menu.closing li {
+  animation: slideOutRight 0.3s ease forwards;
+}
+
+@keyframes slideOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
   }
 } 

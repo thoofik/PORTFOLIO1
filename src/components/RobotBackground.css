@@ -1,0 +1,78 @@
+.robot-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.circuit-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.circuit-node {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #00ffff;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00ffff;
+}
+
+.floating-shapes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.shape {
+  position: absolute;
+  opacity: 0.1;
+}
+
+.shape-1 {
+  width: 20px;
+  height: 20px;
+  background: #ff0080;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.shape-2 {
+  width: 15px;
+  height: 15px;
+  background: #00ffff;
+  border-radius: 50%;
+}
+
+.shape-3 {
+  width: 18px;
+  height: 18px;
+  background: #ff0080;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.scan-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #00ffff, transparent);
+  opacity: 0.3;
+} 

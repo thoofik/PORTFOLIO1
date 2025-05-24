@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FaBars, FaTimes } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 import './Header.css';
 
 const Header = ({ currentSection, setCurrentSection }) => {
@@ -26,20 +25,66 @@ const Header = ({ currentSection, setCurrentSection }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    // Prevent body scroll when menu is open
+    if (isMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMenuOpen]);
+
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
     if (element) {
       const headerHeight = 70; // Account for fixed header
-      const elementPosition = element.offsetTop - headerHeight;
+      const isMobile = window.innerWidth <= 768;
+      const offset = isMobile ? 80 : 70; // Extra offset for mobile
+      const elementPosition = element.offsetTop - offset;
       
-      window.scrollTo({
-        top: elementPosition,
+      // Enhanced scroll options for better mobile support
+      const scrollOptions = {
+        top: Math.max(0, elementPosition),
         behavior: 'smooth'
-      });
+      };
       
+      // For mobile, enhance the scrolling experience
+      if (isMobile) {
+        // Prevent body scroll during transition
+        document.body.style.overflow = 'hidden';
+        
+        // Start the scroll immediately
+        window.scrollTo(scrollOptions);
+        
+        // Close menu and restore scroll after animation starts
+        setTimeout(() => {
+          setIsMenuOpen(false);
+          setCurrentSection(sectionId);
+          document.body.style.overflow = 'unset';
+        }, 150);
+      } else {
+        // Desktop behavior - immediate
+        window.scrollTo(scrollOptions);
+        setCurrentSection(sectionId);
+        setIsMenuOpen(false);
+      }
+    } else {
+      // Fallback if element not found
+      setIsMenuOpen(false);
       setCurrentSection(sectionId);
+      if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'unset';
+      }
     }
-    setIsMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
@@ -82,8 +127,8 @@ const Header = ({ currentSection, setCurrentSection }) => {
                     e.preventDefault();
                     scrollToSection(item.id);
                   }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   {item.label}
                 </motion.a>
@@ -92,27 +137,33 @@ const Header = ({ currentSection, setCurrentSection }) => {
           </ul>
         </nav>
 
-        <motion.div
-          className="mobile-menu-toggle"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+        <motion.button
+          className={`mobile-menu-toggle ${isMenuOpen ? 'active' : ''}`}
+          onClick={toggleMenu}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          aria-label="Toggle menu"
         >
-          <div className="menu-icon">
-            {isMenuOpen ? <FaTimes /> : <FaBars />}
+          <div className="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
-        </motion.div>
+        </motion.button>
       </div>
 
-      {isMenuOpen && (
-        <motion.div
-          className="menu-overlay"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={() => setIsMenuOpen(false)}
-        />
-      )}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            className={`menu-overlay ${isMenuOpen ? 'active' : ''}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            onClick={() => setIsMenuOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 };
